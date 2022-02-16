@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "meldexun.blockoverlayfix.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.blockoverlayfix.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "MixinRenderGlobal"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

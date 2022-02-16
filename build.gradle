@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7.+'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'org.spongepowered.mixin'
+
+version = '1.12.2-1.0.0'
+group = 'meldexun.blockoverlayfix'
+archivesBaseName = 'BlockOverlayFix'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+minecraft {
+    mappings channel: 'stable', version: '39-1.12'
+
+    runs {
+        client {
+            taskName 'runClient BSO 1.12'
+            environment 'MC_VERSION', '1.12.2'
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'info'
+            property 'fml.coreMods.load', 'meldexun.blockoverlayfix.asm.BlockOverlayFixPlugin'
+        }
+
+        server {
+            taskName 'runServer BSO 1.12'
+            environment 'MC_VERSION', '1.12.2'
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'info'
+        }
+    }
+}
+
+repositories {
+    maven { url = 'https://repo.spongepowered.org/maven' }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    implementation('org.spongepowered:mixin:0.8.5') {
+        exclude module: 'guava'
+        exclude module: 'commons-io'
+        exclude module: 'gson'
+    }
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+    add sourceSets.main, 'mixins.blockoverlayfix.refmap.json'
+    config 'mixins.blockoverlayfix.json'
+}
+
+jar {
+    manifest {
+        attributes 'ModSide': 'CLIENT'
+        attributes 'FMLCorePlugin': 'meldexun.blockoverlayfix.asm.BlockOverlayFixPlugin'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'ForceLoadAsMod': 'true'
+        attributes 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
+        attributes 'TweakOrder': '0'
+        attributes 'MixinConfigs': 'mixins.blockoverlayfix.json'
+    }
+}
